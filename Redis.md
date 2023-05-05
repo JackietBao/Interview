@@ -111,3 +111,5 @@ sentinel着眼于高可用，Cluster提高并发量。
 ```
 
 # redis什么配置？
+
+# mysql和redis有什么特点？区别？联系？
