@@ -82,7 +82,7 @@ Redis是常用的非关系型数据库，且可持久化数据。
 ④，Mysql端口号：3306、redis端口号：6379
 ```
 
-# 数据库存储引      擎(扩展)
+# 数据库存储引擎(扩展)
 
 ```shell
 ①，数据库存储引擎
@@ -160,6 +160,34 @@ Redis是常用的非关系型数据库，且可持久化数据。
 
 缺点：恢复时间长，如中间某次的备份数据损坏，将导致数据的丢失
 ```
+
+# Mysqldump备份工具原理及使用流程
+
+```shell
+原理：
+mysqldump备份工具是mysql自带的命令工具，通过sql语句去实现数据的备份和恢复。
+
+备份流程：
+1、备份表：
+ldump -u root -p123 warehouse1 t1 > /home/back/warehouse1.t1.bak
+
+2、备份库：
+mysqldump -uroot -p123 warehouse1 > /home/back/warehouse1.bak
+
+3、备份所有库：
+mysqldump -uroot -p123 -A > /home/back/allbase.bak
+
+恢复流程：
+1、恢复库(先在数据库创建一个新库)
+mysql -uroot -p123 warehouse1 < /home/back/warehouse1.bak
+
+2、恢复表
+mysql> set sql_log_bin=0;   #停止binlog日志
+Query OK, 0 rows affected (0.00 sec)
+mysql> source /home/back/warehouse1.t1.bak
+```
+
+
 
 # 差异备份
 
@@ -353,6 +381,22 @@ Binlog
 
 # 监控mysql都监控什么，都是怎么做的？
 
-# mysql1T内存
+```
+1、mysql进程状态和资源使用情况
+2、mysql的连接数、端口、磁盘使用率
 
-# mysql备份有几种方式？什么区别？
+做法：
+1、mysql服务端安装zabbix agent
+2、配置监控项：mysql的连接数、端口、磁盘使用情况等
+3、创建触发器：进行报警，比如说mysql端口掉了或者是连接数超过了一定的阈值会触发zabbix报警
+4、创建图形：了解mysql各种性能的指标
+```
+
+
+
+# 公司有几台Mysql？配置什么样的？
+
+```
+10台mysql、2核四G、1T内存
+```
+

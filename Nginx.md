@@ -166,6 +166,41 @@ fair：更加智能的负载均衡算法。必须下载Nginx的 upstream_fair �
 
 ## OSI7层协议
 
+```
+记忆口诀：
+1、Please Do Not Tell Stupid People Anything
+2、All People Seem To Need Data Processing
+```
+
+
+
+```
+应用层(http、https、ssh、ftp)
+表示层
+会话层
+传输层(TCP、UTP)端口
+网络层(ICMP)ip地址
+数据链路层(ARP)mac地址
+物理层
+```
+
+```
+TCP协议：
+TCP协议通过三次握手建立连接，保证数据可靠性。
+在文件传输、电子邮件、网页广泛运用。
+```
+
+```
+UTP协议：
+不保证数据包的可靠性，传播的速度快，效率高。
+在音频、直播、视频广泛运用。
+```
+
+```
+ICMP协议：
+ping命令发送ICMP回显请求到目标的主机。
+```
+
 ![image-20230411203611589](assets/Nginx/image-20230411203611589.png)
 
 ## TCP/IP4层协议
