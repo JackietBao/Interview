@@ -7,3 +7,7 @@
 
 
 ![image-20230505205951916](assets/LVS/image-20230505205951916.png)
+
+# Nginx+Keepalived负载均衡原理是什么？
+
+![image-20230506102908878](assets/LVS/image-20230506102908878.png)
