@@ -169,7 +169,7 @@ mysqldump备份工具是mysql自带的命令工具，通过sql语句去实现数
 
 备份流程：
 1、备份表：
-ldump -u root -p123 warehouse1 t1 > /home/back/warehouse1.t1.bak
+mysqldump -u root -p123 warehouse1 t1 > /home/back/warehouse1.t1.bak
 
 2、备份库：
 mysqldump -uroot -p123 warehouse1 > /home/back/warehouse1.bak
@@ -278,7 +278,7 @@ mysql> source /home/back/warehouse1.t1.bak
 # 异步复制
 
 ```shell
-MySQL默认的复制即是异步的，主库在执行完客户端提交的事务后会立即将结果返给给客户端，并不关心从库是否已经接收并处理。
+MySQL默认的复制即是异步的，主库在执行完客户端提交的事务后会立即将结果返给给客户端，并不关心从库是否已经接收并处理。  
 ```
 
 # 同步复制
@@ -321,6 +321,7 @@ MySQL默认的复制即是异步的，主库在执行完客户端提交的事务
 3、RR可重复读：可以避免脏读和不可重复读，但可能出现幻读
 
 4、可串行化：可以避免脏读、不可重复读和幻读，但是并发性极低，一般很少使用。
+
 系统默认RR
 ```
 
@@ -364,7 +365,7 @@ MySQL默认的复制即是异步的，主库在执行完客户端提交的事务
 ```
 Gtid
 1、master更新数据时，会在事务前产生GTID，一同记录到binlog日志中。
-2、slave端的i/o 线程将变更的binlog，写入到本地的relay log中。
+2、slave端的i/o线程将变更的binlog，写入到本地的relay log中。
 3、sql线程从relay log中获取GTID，然后对比slave端的binlog是否有记录。
 4、如果有记录，说明该GTID的事务已经执行，slave会忽略。
 5、如果没有记录，slave就会从relay log中执行该GTID的事务，并记录到binlog。
