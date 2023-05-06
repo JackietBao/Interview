@@ -11,3 +11,7 @@
 # Nginx+Keepalived负载均衡原理是什么？
 
 ![image-20230506102908878](assets/LVS/image-20230506102908878.png)
+
+# LVS_Director + KeepAlived
+
+![image-20230506161523794](assets/LVS/image-20230506161523794.png)
