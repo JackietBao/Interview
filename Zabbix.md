@@ -2,18 +2,18 @@
 
 ```shell
 优点：
-1、开源,无软件成本投入
-2、Server 对设备性能要求低
-3、支持设备多,自带多种监控模板
-4、支持分布式集中管理,有自动发现功能,可以实现自动化监控
-5、当监控项比较多,服务器队列比较大时可以采用被动模式,被监控端主动从监控端去下载需要监控的item 然后取数据上传到监控端。 这种方式对监控端的负载比较小。
-6、Api接口的支持,方便与其他系统结合
+1、开源,成本低。
+2、Server端对设备性能要求低
+3、支持设备多，自带模块多。
+4、分布式集中管理,有自动发现功能,可以实现自动化监控
+5、当监控项比较多,服务器队列比较大时可以采用被动模式,被监控端主动上传数据到监控端。对监控端的负载小。
+6、支持APi接口，与其他系统结合。
 ```
 
 ```shell
 缺点：
-1、需在被监控主机上安装 agent,所有数据都存在数据库里, 产生的数据据很大,瓶颈主要在数据库
-2、系统级别报警设置相对比较多，如果不筛选的话报警邮件会很多；并且自定义的项目报警需要自己设置，过程比较繁琐
+1、被监控安装 agent,数据存在数据库里, 数据很大,瓶颈主要在数据库
+2、报警设置比较多，如果不筛选的话报警邮件会很多；自定义项目的报警需要自己设置，过程繁琐
 ```
 
 # zabbix的监控模式有几种？有什么区别？
@@ -25,13 +25,30 @@
 两种模式都是在agent上的配置文件配置
 ```
 
-# zabbix的分布式监控有什么作用？
+# zabbix的分布式监控有什么特点，怎样部署？
 
 ```shell
-能监视各种网络参数，保证服务器系统的安全运营；并提供灵活的通知机制以让系统管理员快速定位解决存在的各种问题。
+当agent端过多时，server端需要同多个agent端进行交互，server端的压力大。
+在server端和agent端中间可部署一个proxy端，proxy端代理收集数据，将数据统一发送给server端，可以减少server端的压力。
+
+步骤：
+1、proxy端安装mysql和zabbix-proxy、zabbix-git、zabbix-agent、zabbix-sender
+
+2、创建zabbix库，创建用户并授权，zabbix-proxy初始化数据导入数据库
+
+3、配置代理端的配置文件
+
+4、启动zabbix-proxy
 ```
 
 # zabbix设置邮箱报警的流程，简述一下？
+
+```
+1、开启邮箱SMIP，记录授权码
+2、创建按
+```
+
+
 
 ```shell
 1、创建触发器(定义严重级别、关联监控项)
@@ -39,6 +56,8 @@
 3、visudo给zabbix提权
 4、开启邮箱SMIP，记录授权码
 5、创建报警媒体类型(绑定邮箱)
+6、选择动作→操作、操作细节，关联用户群组和用户、设置发送到邮箱
+7、选择管理→用户，设置报警媒介
 ```
 
 # Zabbix自动发现怎么做的？
@@ -56,40 +75,151 @@
 
 # Zabbix分布式监控有什么优点？
 
-```shell
-支持自动发现服务器和网络设备；
-支持底层自动发现；
-分布式的监控体系和集中式的WEB管理；
-支持主动监控和被动监控模式；
-服务器端支持多种操作系统：Linux, Solaris, HP-UX, AIX, FreeBSD, OpenBSD, MAC等；
-Agent客户端支持多种操作系统：Linux, Solaris, HP-UX, AIX, FreeBSD,Windows等；
-基于SNMP、IPMI接口方式、Agent方式；
-安全的用户认证及权限配置；
-基于WEB的管理方法，支持自由的自定义事件和邮件、短信发送；
-高水平的业务视图监控资源，支持日志审计，资产管理等功能；
-支持高水平API二次开发、脚本监控、自Key定义、自动化运维整合调用。
 ```
+1、可扩展性：
+单个zabbix服务器无法满足高流量负载，分布式监控将负载分散到多个服务器。
+
+2、可靠性：
+主服务器宕机，其他服务器继续监控活动。
+
+3、降低网络负载：
+数据聚集在本地服务器上，减少网络传输负担。
+```
+
+```http
+5月8日
+```
+
+
 
 # zabbix你们都监控什么内容？如何去做？
 
-```shell
-互联网企业运用 Zabbix 常常用于监控服务器和网络设备的状态和性能。以下是一些具体的监控内容：
+## 监控MySQL
 
-1. 服务器计算资源的使用情况，例如 CPU 使用率、内存和磁盘空间等。
-2. 服务和进程的状态，例如 Web 服务器和数据库进程的运行情况。
-3. 网络设备的状态，例如交换机和路由器的运行状态和接口带宽使用情况。
-4. 网站的性能，例如响应时间、吞吐量和错误率等。
-5. 应用程序的状态，例如数据库查询性能和缓存 hit rate 等。
-
-可以通过以下步骤来实现 Zabbix 监控：
-
-1. 安装和配置 Zabbix 服务器和代理。
-2. 添加需要监控的主机和设备，并配置相应的监控项和触发器。
-3. 配置 Zabbix 的图形和报告，以便使用者可以查看和解释监控数据。
-4. 配置报警规则，以便在出现问题时及时进行通知和处理。
-
-另外，Zabbix 还可以通过自定义脚本和插件来监控更细节和个性化的内容。具体的实现方法需要根据实际情况做出相应的调整。
 ```
+监控mysql服务是否存活
+1、被监控节点安装zabbix-agent应用
+2、创建主机、配置监控项
+3、使用zabbix-server端自带模板net.tcp.port[port]
+4、创建触发器，表达式设为：值为1运行，值为0不运行
+5、创建图形
+```
+
+```shell
+监控mysql主从复制状态
+1、使用自定义key的方式，先获取主从状态的信息
+mysql -uroot  -e "show slave status\G" | grep -E 'Slave_IO_Running: Yes|Slave_SQL_Running: Yes' |grep -c Yes //统计IO/SQL线程是YES的数量；
+
+2、创建自定义key的文件在/etc/zabbix/zabbix.agent.d/status.conf,在文件中创建key为mysql.status
+[root@mysql ~]# vim /etc/zabbix/zabbix_agentd.d/status.conf
+UserParameter=mysql.status,mysql -u root -e "show slave status\G" | grep -E 'Slave_IO_Running: Yes|Slave_SQL_Running: Yes'  | grep -c Yes
+设置完成后重新启动zabbix-agent
+
+3、创建监控项
+
+4、创建触发器
+表达式：(值=2，主从正常，值<2，主从失败)
+
+5、创建图形
+```
+
+```shell
+监控主从是否存在延迟
+1、使用自定义key的方式，先获取主从延迟信息。
+获取SQL_Delay的值，不为0这出现主从延迟
+[root@mysql-slave ~]# mysql -u root -e "show slave status\G" | grep SQL_Delay | awk -F : '{print $2}'
+0
+
+2、创建自定义key的文件在/etc/zabbix/zabbix.agent.d/status.conf,在文件中创建key为mysql.ab
+[root@mysql ~]# cat /etc/zabbix/zabbix_agentd.d/status.conf 
+UserParameter=mysql.ab,mysql -u root -e "show slave status\G" | grep "Seconds_Behind_Master" | awk -F: '{print $2}'
+设置完成后重新启动zabbix-agent
+
+3、创建监控项
+
+4、创建触发器
+表达式：(判断前一个值，值为0没有延迟)
+
+5、创建图形
+```
+
+```shell
+监控mysql吞吐量
+1、使用自定义的方式，先获取到mysql吞吐量的信息(监控mysql的插入、查询、删除、更新等)
+
+2、关闭slave、关闭mysql
+
+3、master节点vim /etc/my.cnf添加配置
+[mysqladmin]
+user=root
+password='auska@123'
+
+4、启动mysql、启动slave、
+
+5、master /etc/zabbix/zabbix_agentd.d/asukaeva.sh 脚本
+
+6、授权
+
+7、做软链接
+
+8、master创建对应的key
+[root@mysql-master ~]# cat /etc/zabbix/zabbix_agentd.d/status.conf 
+UserParameter=mysql_status[*],bash /etc/zabbix/zabbix_agentd.d/asukaeva.sh "$1"
+重启zabbix-agent
+
+9、创建监控项
+com_insert
+com_delete
+com_update
+com_slow
+com_select
+
+10、创建图形
+```
+
+```shell
+监控mysql的threads_connected
+1、slave执行使用自定义key的方式，先获取到threads_connected的信息。
+[root@mysql-slave ~]# mysql -u root -e "select count(*) from performance_schema.threads where name like '%connection';" |grep -v count
+
+2、创建自定义key
+[root@mysql-slave ~]# cat /etc/zabbix/zabbix_agentd.d/status.conf 
+UserParameter=mysql_thread,mysql -u root -e "select count(*) from performance_schema.threads where name like '%connection';" |grep -v count
+[root@mysql-slave ~]# systemctl restart zabbix-agent
+
+3、创建监控项
+
+4、创建触发器，根据服务器的性能设置thread_connected的最大值
+
+5、创建图形
+```
+
+```shell
+监控数据库的TPS
+1、使用自定义key的方式，先获取到TPS的值；
+计算公式：Com_commit/S+Com_rollback/S
+
+2、创建一个获取tps的脚本
+[root@mysql ~]# cat /etc/zabbix/zabbix_agentd.d/tps.sh 
+#!/bin/bash
+rollback=`mysqladmin -u root extended-status | awk  '/\<Com_rollback\>/{print $4}'`#事务回滚的次数
+commit=`mysqladmin -u root extended-status | awk  '/\<Com_commit\>/{print $4}'` #事务提交的次数
+s=`mysqladmin status| awk '{print $2}'`  #Mysql运行的总时长
+echo $[($rollback+$commit)/$s]
+
+3、脚本授权
+
+4、创建自定义key
+[root@mysql ~]# cat /etc/zabbix/zabbix_agentd.d/status.conf 
+UserParameter=mysql.tps,bash /etc/zabbix/zabbix_agentd.d/tps.sh
+[root@mysql ~]# systemctl restart zabbix-agent
+
+5、创建监控项
+
+6、创建图形
+```
+
+
 
 # zabbix的缺点是什么？如何解决
 
@@ -184,3 +314,5 @@ Zabbix和Grafana是两个流行的开源监控解决方案。可以通过Zabbix�
 # 钉钉报警的报警媒介什么类型的？
 
 # 你们都接受过什么报警消息？都是怎么解决的？
+
+# 都监控nginx什么参数怎么做呢？
