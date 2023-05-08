@@ -6,7 +6,7 @@
 2、Server端对设备性能要求低
 3、支持设备多，自带模块多。
 4、分布式集中管理,有自动发现功能,可以实现自动化监控
-5、当监控项比较多,服务器队列比较大时可以采用被动模式,被监控端主动上传数据到监控端。对监控端的负载小。
+5、当监控项比较多,服务器队列拥挤可以采用被动模式,被监控端主动上传数据到监控端。对监控端的负载小。
 6、支持APi接口，与其他系统结合。
 ```
 
@@ -43,13 +43,6 @@
 
 # zabbix设置邮箱报警的流程，简述一下？
 
-```
-1、开启邮箱SMIP，记录授权码
-2、创建按
-```
-
-
-
 ```shell
 1、创建触发器(定义严重级别、关联监控项)
 2、创建动作(确定好主机、默认操作步骤的时间、输入命令)
@@ -63,14 +56,14 @@
 # Zabbix自动发现怎么做的？
 
 ```shell
-配置网络发现Network discovery
 (1)准备被发现的主机
 1、部署agent端
-2、设置agent配置文件[Server端口、提权]
+2、设置agent配置文件[Server的ip、提权]
 3、开启服务
-(2)设置自动发现规则discovery
+(2)设置自动发现规则discovery[ip范围、更新间隔.. ]
 (3)设置自动发现的动作
-(4)启动动作、查看效果
+(4)点击操作→操作细节，与模板关联
+(5)启动动作、查看效果
 ```
 
 # Zabbix分布式监控有什么优点？
@@ -84,10 +77,6 @@
 
 3、降低网络负载：
 数据聚集在本地服务器上，减少网络传输负担。
-```
-
-```http
-5月8日
 ```
 
 
@@ -219,100 +208,196 @@ UserParameter=mysql.tps,bash /etc/zabbix/zabbix_agentd.d/tps.sh
 6、创建图形
 ```
 
+## 监控redis
+
+```shell
+1、命令行中查看redis数据的监控指标
+[root@redis-server ~]# echo -e "info\n quit" | nc 192.168.153.149 "6379" | grep -w redis_version
+redis_version:3.2.12
+# nc命令测试端口
+# grep -w 精确匹配
+
+
+[root@redis-server ~]# echo -e "info\n quit" | nc 192.168.153.149 "6379" | grep -w redis_version | awk -F ":" '{print $2}'
+3.2.12
+
+[root@redis-server ~]# echo -e "info\n quit" | nc 192.168.153.149 "6379" | grep -w os
+os:Linux 3.10.0-693.el7.x86_64 x86_64
+
+[root@redis-server ~]# echo -e "info\n quit" | nc 192.168.153.149 "6379" | grep -w os | awk -F ":" '{print $2}'
+Linux 3.10.0-693.el7.x86_64 x86_64
+
+2、编[root@redis-server ~]# vim /etc/zabbix/zabbix_agentd.d/redis_monitoring.sh
+#!/bin/bash
+
+function redis_status(){
+    R_PORT=$1
+    R_COMMAND=$2
+    (echo -en "INFO \r\n";sleep 1;) | nc 192.168.153.149 "$R_PORT" > /tmp/redis_"$R_PORT".tmp
+    REDIS_STATUS_VALUE=$(grep -w "$R_COMMAND" /tmp/redis_"$R_PORT".tmp | cut -d ':' -f2)
+    echo $REDIS_STATUS_VALUE
+}
+
+function help(){
+    echo "${0} + redis_status+ PORT + COMMAND"
+}
+
+function main(){
+    case $1 in
+        redis_status)
+            redis_status $2 $3
+            ;;
+        *)
+            help
+            ;;
+    esac
+}
+
+main $1 $2 $3写脚本获取redis的监控项数据
+[root@redis-server ~]# vim /etc/zabbix/zabbix_agentd.d/redis_monitoring.sh
+#!/bin/bash
+
+function redis_status(){
+    R_PORT=$1
+    R_COMMAND=$2
+    (echo -en "INFO \r\n";sleep 1;) | nc 192.168.153.149 "$R_PORT" > /tmp/redis_"$R_PORT".tmp
+    REDIS_STATUS_VALUE=$(grep -w "$R_COMMAND" /tmp/redis_"$R_PORT".tmp | cut -d ':' -f2)
+    echo $REDIS_STATUS_VALUE
+}
+
+function help(){
+    echo "${0} + redis_status+ PORT + COMMAND"
+}
+
+function main(){
+    case $1 in
+        redis_status)
+            redis_status $2 $3
+            ;;
+        *)
+            help
+            ;;
+    esac
+}
+
+main $1 $2 $3
+
+3、redis端配置server端ip、主机名称
+
+4、关联自带的监控模板
+```
+
+# 监控nginx性能状态
+
+```shell
+1、编写脚本、脚本提权
+
+2、创建nginx监控模板
+
+3、创建监控项，key键值关连模板参数
+
+4、创建图形
+```
+
 
 
 # zabbix的缺点是什么？如何解决
 
 ```
-Zabbix 是一款功能强大的开源监控软件，但是它也有一些缺点，如下所述：
-
-1. 安装和配置复杂：安装和配置 Zabbix 需要一定的 Linux 系统管理经验和知识，对于新手来说可能会有一定难度。
-
-2. 存储方式不够灵活：Zabbix 默认数据存储方式为关系型数据库，无法轻松地切换到其他存储方式。
-
-3. 导入数据缓慢：在 Zabbix 中导入大量历史数据时，可能会导致系统性能下降并导致缓慢。
-
-4. 时间同步问题：Zabbix 需要确保监控服务器和被监控设备的时间同步，否则可能会出现时间误差导致数据异常等问题。
-
-解决这些问题的方法如下：
-
-1. 对于安装和配置复杂的问题，可以考虑参考官方文档、网上教程或者请教有经验的同行。
-
-2. 对于存储方式不够灵活的问题，可以考虑使用 Zabbix 的 API 接口或者第三方的存储插件来扩展其存储方式。
-
-3. 对于导入数据缓慢的问题，可以使用 Zabbix 的分布式存储方案或者采用其他解决方案来解决。
-
-4. 对于时间同步问题，可以采用 NTP 协议来确保设备时间同步。
+缺点：
+1、被监控安装 agent,数据存在数据库里, 数据很大,瓶颈主要在数据库
+2、报警设置比较多，如果不筛选的话报警邮件会很多；自定义项目的报警需要自己设置，过程繁琐
 ```
+
+```
+解决：
+1、使用zabbix的api接口、插件，扩展储存方式
+2、参考官方文档、网上教程或者请教有经验的同行
+```
+
+
 
 # zabbix结合grafana怎么做？
 
-```shell
-Zabbix和Grafana是两个流行的开源监控解决方案。可以通过Zabbix的API将监控数据推送到Grafana中，并使用Grafana漂亮的图表展示数据。下面是具体的步骤：
-
-1. 在Zabbix中，创建一个API用户并赋予权限。可以通过"Administration"菜单下的"API"来进行此操作。
-
-2. 在Grafana中安装"Zabbix data source"插件。可以通过"Plugins"菜单来搜索并安装。
-
-3. 在Grafana中，创建一个Zabbix数据源。需要提供Zabbix服务器的URL以及使用API的用户凭证。
-
-4. 创建一个新的图表面板，并在数据源中选择新创建的Zabbix数据源。
-
-5. 将想要监控的主机或项目添加到图表中。可以选择要监控的指标和时间范围等选项。
-
-6. 根据需要对图表进行调整和编辑。可以添加文本、注释或其他图表，或将多个图表组合在一起。
-
-通过这些步骤，您就可以使用Grafana来展示和分析Zabbix的监控数据，对系统进行实时和历史性能分析。
 ```
+1、安装grafana，端口号为3000
+2、下载zabbix插件
+3、grafana开启zabbix插件
+4、配置zabbix数据源
+```
+
+
 
 # Zabbix电话报警怎么做？
 
-```shell
-1、使用睿象云web平台，在zabbix-server端zabbix脚本目录里安装睿象云报警的脚本。
-2、在睿象云操作添加报警的状态、级别。
-3、zabbix-server端创建动作
 ```
-
-# 你们公司都接收到什么报警消息，如何处理的？
-
-```shell
-我们公司接收到的 Zabbix 报警消息包括但不限于以下的内容：
-
-1. 系统硬件故障或磁盘容量不足；
-2. 网络或应用服务的不可用性或出现异常；
-3. 安全事件的监测与跟踪；
-4. 数据库连接失败或 SQL 错误；
-5. 用户请求失败或超时。
-
-对于这些报警，我们采取的处理方法通常如下：
-
-1. 确认该报警是否真实，例如在磁盘容量报警后，检查磁盘使用情况并排查恶意程序等；
-2. 将报警信息反馈到相关的责任人员，这样他们就能在第一时间采取措施，防范可能的意外损失；
-3. 如果发现疑似攻击行为，立即采取补救措施，例如增强防火墙、监控网络数据流量等等。
-
-总之，我们尽力保证系统的可用性、可靠性和安全性，并保持响应时间尽可能快。
+1、使用睿象云web平台，在zabbix-server端安装睿象云web插件
+2、安装完之后会自动神生成新的用户和报警媒介
+3、象云web平台，点击配置、分配策略，关联zabbix
+4、找到通知策略→采用什么方式进行通知
+5、zabbix添加动作→关联触发器
 ```
-
-# zabbix监控的优点和缺点？
-
-# grafana怎么配置？
 
 # 用什么接收报警？什么样的监控项进行电话报警？
 
-# 电话报警怎么设置？
+```
+一般用钉钉进行报警，紧急事项进行电话报警。
+钉钉报警：
+msyql的thread_connected超过预定的阈值
+mysql、nginx、redis端口是否断开
+电话报警：
+mysql服务是否存活
+mysql主从复制状态
+CPU、内存利用率达到70%
+内存空间少于25%
+```
 
-# 大概有多少个监控项会电话报警？
 
-# 监控多少个监控端？
-
-# 接受过什么电话报警，怎么去解决的？
 
 # 怎么排查服务器比较卡顿的情况？是什么原因造成的？怎么去解决？
 
-# zabbix都用它监控什么内容？怎么做的？
+```
+(1)原因：
+1、CPU使用率可能大于50%
+2、网络使用率过高
+3、内存使用率过高
+
+解决：
+调整资源、硬件配置升级
+
+(2)原因：
+1、DDOS攻击
+2、大流量冲击
+3、机房故障
+4、网卡、网线、交换机故障
+
+解决：
+1、及时更新系统
+2、删除冗余文件和账户
+3、定期故障检查
+```
+
+
 
 # 钉钉报警的报警媒介什么类型的？
 
-# 你们都接受过什么报警消息？都是怎么解决的？
+```
+脚本
+```
 
-# 都监控nginx什么参数怎么做呢？
+# 大概有多少个监控项会电话报警？
+
+```
+mysql服务是否存活
+mysql主从复制状态
+CPU、内存利用率达到70%
+内存空间少于25%
+```
+
+# 监控多少个监控端？
+
+```
+100多个
+```
+
+# 你们公司都接收到什么报警消息，如何处理的？
