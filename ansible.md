@@ -41,8 +41,7 @@ ansible weball[主机组] -m shell -a 'useradd asuka'
 2、复制文件到远程主机并修改权限(属主、属组)
 ansible weball -m copy -a 'src=/root/a.txt dest=/root owner=root group=root mode=644' -o
 
-3、运用playboos引用name、yum变量安装apache、nginx、mysql等
-引用name、copy变量、notify触发，将主机apache的配置文件覆盖远程主机上
+3、运用playboos引用name、yum变量、notify触发，安装apache、nginx、mysql等
 ```
 
 # Ansible都需要配置什么？去实现控制机器

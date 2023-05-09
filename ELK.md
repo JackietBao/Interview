@@ -36,3 +36,16 @@ Logstash对数据采集处理，发给Elasticsearch储存索引，使用Kibana�
 目的：了解应用程序运行的情况，快速定位和排查问题，提高服务器稳定可靠性。
 ```
 
+# ELK终极版
+
+![image-20230509152225596](assets/ELK/image-20230509152225596.png)
+
+```
+1、filebeat收集日志，发送到kafka集群，指定生成topic
+2、kafka集群储存topic
+3、logstash收集topic，收集完后，生成索引
+4、ES搜集并分析日志
+5、kibana前端创建对应索引，进行展示
+```
+
+# ELK都监控什么日志？收集什么日志？

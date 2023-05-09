@@ -1,7 +1,6 @@
 # Tomcat 
 
 ```shell
-公司一般为4核8g，32g的磁盘
 Tomcat是一个免费的开放源代码的Web应用，轻量级应用服务器，适合中小型企业使用，需要依赖java环境使用jdk。
 
 JVM：java虚拟机

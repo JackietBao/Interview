@@ -37,3 +37,11 @@
 # LVS-Nat模式+Keepalived
 
 ![image-20230507125405343](assets/LVS/image-20230507125405343.png)
+
+
+
+# nginx和lvs有什么区别？
+
+# DR模式和NAT模式的区别？
+
+# lvs四种工作模式是什么？

@@ -664,9 +664,4 @@ upstream backend {
 
 
 
-# Nginx配置多少？
-
-```
-2核4G
-```
-
+# 访问nginx程序比较慢，怎么去处理？
