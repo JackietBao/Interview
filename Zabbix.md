@@ -82,8 +82,6 @@
 
 # zabbix你们都监控什么内容？如何去做？
 
-## 监控MySQL
-
 ```shell
 监控mysql服务是否存活
 1、被监控节点安装zabbix-agent应用
@@ -104,8 +102,48 @@
 3、创建触发器(判断前一个值，值为0没有延迟)
 4、创建图形
 
+监控mysql吞吐量
+1、自定义方式，获取mysql吞吐量(插入、查询、删除、更新等)
+2、关闭slave、关闭muysql
+3、master节点 /etc/my.conf添加
+[mysqladmin]
+user=root
+password='auska@123'
+4、从机启动mysql、启动slave
+5、在master /etc/zabbix/zabbix_agented.d/asuka.sh脚本
+6、授权
+7、做软链接
+8、创建监控项
+9、创建图形
 
+监控mysql的threads_connected信息
+1、slave执行自定义key的方式，获取threads_connected信息
+2、创建自定义的key
+3、创建监控项
+4、创建触发器，根据服务器的性能设置threads_connected最大值
+5、创建图形
+
+监控数据库的TPS
+1、创建一个获取tps的脚本，并授权
+2、创建自定义key
+3、创建监控项
+4、创建图形
+
+监控redis
+1、创建脚本，查看redis数据的监控指标
+2、redis端配置server端的ip和主机的名称
+3、关联自带的监控模板
+
+监控nginx
+1、编写脚本、脚本提权
+2、创建nginx监控模板
+3、创建监控项，key键值关连模板参数
+4、创建图形
 ```
+
+
+
+## 监控MySQL
 
 ```shell
 监控mysql主从复制状态
@@ -159,6 +197,20 @@ UserParameter=mysql.ab,mysql -u root -e "show slave status\G" | grep "Seconds_Be
 
 ```shell
 监控mysql吞吐量
+1、自定义方式，获取mysql吞吐量(插入、查询、删除、更新等)
+2、关闭slave、关闭muysql
+3、master节点 /etc/my.conf添加
+[mysqladmin]
+user=root
+password='auska@123'
+4、从机启动mysql、启动slave
+5、在master /etc/zabbix/zabbix_agented.d/asuka.sh脚本
+6、授权
+7、做软链接
+8、创建监控项
+9、创建图形
+
+
 1、使用自定义的方式，先获取到mysql吞吐量的信息(监控mysql的插入、查询、删除、更新等)
 
 2、关闭slave、关闭mysql
@@ -192,7 +244,14 @@ com_select
 ```
 
 ```shell
-监控mysql的threads_connected
+监控mysql的threads_connected信息
+1、slave执行自定义key的方式，获取threads_connected信息
+2、创建自定义的key
+3、创建监控项
+4、创建触发器，根据服务器的性能设置threads_connected最大值
+5、创建图形
+
+
 1、slave执行使用自定义key的方式，先获取到threads_connected的信息。
 [root@mysql-slave ~]# mysql -u root -e "select count(*) from performance_schema.threads where name like '%connection';" |grep -v count
 
@@ -210,6 +269,12 @@ UserParameter=mysql_thread,mysql -u root -e "select count(*) from performance_sc
 
 ```shell
 监控数据库的TPS
+1、创建一个获取tps的脚本，并授权
+2、创建自定义key
+3、创建监控项
+4、创建图形
+
+
 1、使用自定义key的方式，先获取到TPS的值；
 计算公式：Com_commit/S+Com_rollback/S
 
@@ -236,6 +301,13 @@ UserParameter=mysql.tps,bash /etc/zabbix/zabbix_agentd.d/tps.sh
 ## 监控redis
 
 ```shell
+监控redis
+1、创建脚本，查看redis数据的监控指标
+2、redis端配置server端的ip和主机的名称
+3、关联自带的监控模板
+
+
+
 1、命令行中查看redis数据的监控指标
 [root@redis-server ~]# echo -e "info\n quit" | nc 192.168.153.149 "6379" | grep -w redis_version
 redis_version:3.2.12

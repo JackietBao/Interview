@@ -46,9 +46,38 @@
 100多个
 ```
 
+# 常用服务版本及端口以及开发语言
+
+```shell
+服务              端口             开发语言                   版本
+nginx             80                C                      1.18
+tomcat       8080，8005，8009      java                     8.54
+mysql            3306               C                      5.7.27
+redis            6379               C                      4.0.9
+zabbix           10050              C                       5.0
+jenkins          8080             java                     2.346
+jdk(java)                                                   1.8
+ansible           22             python                    2.927
+kafka            9092             scala                    2.11
+elasticsearch    9200             java                     6.5.4
+logstash         9300             jruby                    6.5.4
+filebeat     没端口看日志进程         go                      6.5.4
+kibana           5601         html&javascript              6.5.4
+docker       无端口查看服务           go                     1.23.1
+kunbernets                          go                     1.19
+FTP               21                                             
+SSH               22
+```
 
 
-# nginx用的什么版本？
+
+# jenkins编译打包工具？哪个版本？
+
+```
+meaven 3.7版本
+```
+
+
 
 # 公司有多少台机器？虚拟机还是服务器？
 
@@ -72,3 +101,12 @@
 
 # tomcat每天日志5.60M
 
+# 上家公司做什么的？开发什么网站？
+
+# 用户怎么去用？网站上有什么功能？
+
+# 小程序是做什么的？上面都有什么功能啊？
+
+# 你在这个项目中，都是负责什么样的内容？
+
+# 你都用过什么？
