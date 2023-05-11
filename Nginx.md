@@ -664,7 +664,15 @@ upstream backend {
 
 # 访问nginx程序比较慢，怎么去处理？
 
+```http
+一台服务器比较卡，应该怎么去做？
 ```
+
+
+
+```
+top查看cpu和内存使用率、杀死不用的进程
+
 1、资源不足：
 服务器配置低或访问量大，导致资源不足。应当升级或扩容服务器。
 
@@ -678,6 +686,30 @@ upstream backend {
 worker_connections过小、keepalive_timeout时间过长
 
 5、网络延迟
+```
+
+# nginx优化参数有哪些？哪些模块有哪些作用？
+
+```
+参数优化：
+1、worker_processes：
+指定worker进程数，建议cpu核数
+2、worker_connections：
+worker进程最大连接数，建议设为1024
+3、keepalived_timeout：
+http keepalived最大并发连接数。在高并发场景可设置几秒或更长的时间。
+
+常用模块：
+1、rewrite：
+地址重写
+2、proxy：
+反向代理，转发客户端请求到后端服务器
+3、upstream：
+后端服务器分组，实现负载均衡和高可用
+4、gzip：
+数据压缩，减少网络传输量，提高响应速度
+5、access.log
+记录客户端请求日志
 ```
 
 

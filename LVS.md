@@ -96,3 +96,12 @@ DR模式要求RS绑定VIP，效率高，NAT模式不需要RS绑定VIP，效率�
 DR模式和NAT模式的区别
 ```
 
+# 你们怎么解决单节点机器故障的问题？
+
+```
+集群技术：
+sentinel，cluster，LVS负载均衡，nginx+keepalived高可用
+master出现宕机，slave可顶上去，实现故障转移
+```
+
+
