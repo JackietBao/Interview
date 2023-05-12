@@ -72,8 +72,7 @@ lvs支持TCP、UDP、FTP协议
 2、负载均衡器和后端服务器通信方式
 
 DR模式：
-VIP绑定到RS上，LVS负责将请求包转发给RS，将响应包的源IP地址改为VIP发送客户端。
-LVS将请求包转发RS，响应包从RS发送客户端，DR模式效率高。
+VIP绑定到RS上，LVS负责将请求包转发给RS，将响应包的源IP地址改为VIP发送客户端，DR模式效率高。
 
 NAT模式：
 VIP绑定到LVS物理网卡上。LVS接受请求包时，将请求包目标ip地址改为一个rs的ip地址，并发给rs。
@@ -103,5 +102,4 @@ DR模式和NAT模式的区别
 sentinel，cluster，LVS负载均衡，nginx+keepalived高可用
 master出现宕机，slave可顶上去，实现故障转移
 ```
-
 
