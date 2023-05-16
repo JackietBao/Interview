@@ -168,3 +168,13 @@ fdisk：划分磁盘MBR格式。硬盘容量<2T
 
 
 
+# Linux 常用的网络排查指令有哪些？
+
+```shell
+1.ss -tanlp都可以；
+2.netstat  -tnlp，有些也可以补充，-u是udp协议，-t是tcp协议；
+3.ping  ip地址，也可以确定通不通的一个手段，
+4.tranceroute ip地址 ，排查地址经过的路径，
+5.抓包，tcpdump命令抓包，tcpdump -nn -i eth0抓包eth0网卡的包
+```
+
