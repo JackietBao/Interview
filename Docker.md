@@ -85,7 +85,11 @@ ONBUILD：构建过程中镜像设置触发器，构建新的镜像会触发并�
 # Dockerfile中的CMD和ENTRYPOINT指令有什么区别？
 
 ```
+CMD：容器启动后要执行的命令。如果Dockfile存在多个CMD指令，则只有最后一个CDM指令是生效的，覆盖掉之前的指令。
+ENTRYPOINT：容器启动时要执行的命令。无论执行什么命令，ENTRYPOINT都会被执行。如果Dockerfile中存在多个ENTRYPOINT指令，则最后一个ENTRYPOINT指令生效，会覆盖之前的指令。
 
+ENTRYPOINT用于定义容器的主程序或者默认的启动命令，可接受参数。
+CMD用于设置容器默认执行命令，但可通过运行容器时的参数来覆盖它。
 ```
 
 
