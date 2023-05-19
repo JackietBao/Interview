@@ -85,12 +85,72 @@ ONBUILD：构建过程中镜像设置触发器，构建新的镜像会触发并�
 # Dockerfile中的CMD和ENTRYPOINT指令有什么区别？
 
 ```
-CMD：容器启动后要执行的命令。如果Dockfile存在多个CMD指令，则只有最后一个CDM指令是生效的，覆盖掉之前的指令。
-ENTRYPOINT：容器启动时要执行的命令。无论执行什么命令，ENTRYPOINT都会被执行。如果Dockerfile中存在多个ENTRYPOINT指令，则最后一个ENTRYPOINT指令生效，会覆盖之前的指令。
+CDM：
+1、每个dockerfile中只能有一个CMD，若是有多个只能执行最后一个
+2、如果在运行容器时指定了要执行的命令，那么CDM命令就会被覆盖
 
-ENTRYPOINT用于定义容器的主程序或者默认的启动命令，可接受参数。
-CMD用于设置容器默认执行命令，但可通过运行容器时的参数来覆盖它。
+ENTRYPOINT
+1、指定容器启动时要执行的命令，无论是在容器运行时指定了什么命令，ENTRYPOINT都会被执行
+2、Dockerfile存在多个ENTRYPOINT指令，最后一个ENTRYPOINT指令生效
 ```
 
 
+
+# Docker的网络模式有几种，有什么区别？
+
+```
+bridge、host、none
+bridge：
+默认情况下启动、创建容器都是用该模式，每次docker容器重启时会按照顺序获取相应ip地址
+
+host：
+容器与宿主机共享一个网络命名空间，不需要端口映射可访问容器的服务
+
+none：
+启动容器时，通过--network=none，docker容器不会分配局域网ip
+```
+
+
+
+# Dockerfile中的ADD和COPY有什么区别？
+
+```
+1、copy复制本地文件或目录到文件中，add支持远程url下载
+
+2、add可以自动解压，copy复制本地压缩包，接着使用run手动压缩
+
+3、add能添加网络资源，将远程文件拷贝到容器中
+```
+
+
+
+# Docker如何做资源限制？
+
+```shell
+CPU限制
+1、cpu限制
+docker run --rm -it -c 512 progrium/stress --cpu 4
+
+2、限制cpu的核数
+限制cpu只能使用1.5核数cpu
+docker run --rm -it --cpus 1.5 progrium/stress --cpu 3
+
+3、cpu绑定
+假如主机上有4个核心，可以通过--cpuset参数让容器只能运行在前两个核上
+docker run --rm -it --cpuset-cpus=0,1 progrium/stress --cpu 2 
+
+men资源限制
+[root@docker-server ~]# docker run --rm -it -m 64m progrium/stress --vm 1 --vm-bytes 64M --vm-hang 0
+
+容器可以正常运行。
+-m 64m：限制你这个容器只能使用64M
+--vm-bytes 64M：将内存撑到64兆是不会报错，因为我有64兆内存可用。
+hang:就是卡在这里。
+--vm：生成几个占用内存的进程
+
+而如果申请 150M 内存，会发现容器里的进程被 kill 掉了（worker 6 got signal 9，signal 9 就是 kill 信号）
+猜测：如果内存消耗占用限制数值的2倍，容器会被kill掉
+
+[root@docker-server ~]# docker run --rm -it -m 64m progrium/stress --vm 1 --vm-bytes 150M --vm-hang 0
+```
 
