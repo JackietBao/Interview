@@ -8,13 +8,13 @@
 kubernetes接口，负责部署、操作
 
 3、controller-manager:
-kubernetes控制器，根据控制器配置pod副本数和当前运行的pod实际数量之间的差异，决定启动或删除一个或者多个pd
+kubernetes控制器，根据控制器配置pod副本数和当前运行的pod实际数量之间的差异，决定启动或删除一个或者多个pod
 
 4、scheduler：
 负责提供策略，将新创建的pod分配到集群中最合适的节点上，提高资源利用率
 
 5、kubelet：
-每个节点上都有一个kubelet进程，用于管理pod生命舟曲，会定期检查pod定义描述的要求，确保容器已经启动并保持运行状态
+每个节点上都有一个kubelet进程，用于管理pod生命周期，会定期检查pod定义描述的要求，确保容器已经启动并保持运行状态
 
 6、kube-proxy：
 为service提高网络代理和负载均衡
