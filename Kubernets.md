@@ -73,4 +73,62 @@ configmap储存程序的配置信息，比如说环境变量等，secret储存�
 
 # k8s-Service(node port)暴露nginx端口
 
+![image-20230525201043049](assets/Kubernets/image-20230525201043049.png)
+
+
+
+# 你了解的k8s的pod副本控制器有哪些？有什么区别？
+
+```
+1、Deployment：
+是kubernetes常用的控制器，用来管理pod复制数、升级和回滚。
+
+2、replicaset：
+是kubernetes早期版本控制器，确保pod正在运行，与deployment息息相关，作为deployment控制器底层实现的一部分，不单独使用
+
+3、replication controller=CR与Deployment一样功能，但是不能回滚升级
+```
+
+
+
+# Service说一下有什么作用？
+
+```
+service是k8s一个资源对象，作用是用来暴露pod的
+
+通过创建service，识别pod标签，将带有相同标签的pod放入同一个endpoints，service会生成一个clusterip和端口，通过这个ip和端口访问
+
+默认以轮询的方式访问endpoints中的pod，service会将node节点上的端口暴露出来，端口的范围是30000-32767
+
+通过访问node节点的ip以及暴露出来的端口将请求转发到clusterip，之后再访问到endpoints中的某个pod
+```
+
+
+
+# k8s的镜像拉取策略说一下？
+
+```
+Ifnotpresent：
+镜像以及存在的前提下，kubelet不再去拉取这个镜像，仅当本地缺失时才会从仓库去拉取这个镜像，是默认的镜像拉取的策略
+
+Alaways:
+每次创建pod都会重新拉取这个镜像
+
+NerverPod：
+不会主动拉取这个镜像，仅是使用本地的镜像
+
+对于标签为latest的镜像文件，默认镜像获取策略是always
+对于其他标签的镜像，默认策略是Ifnotpresent
+```
+
+
+
+# k8s如何做pod资源限制？
+
+```
+常见的是cpu和内存的资源限制
+resources：资源管理，在这个模块下进行限制
+requests：最低保障，无法去满足，则pod是无法去调度的
+limits：最高的限制，任何情况下limits都应该设置为大于或者等与requests
+```
 
