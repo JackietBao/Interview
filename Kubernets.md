@@ -74,4 +74,3 @@ configmap储存程序的配置信息，比如说环境变量等，secret储存�
 # k8s-Service(node port)暴露nginx端口
 
 
-
