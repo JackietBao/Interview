@@ -71,3 +71,6 @@ secret储存的数据是加密的，可以安全地储存敏感数据
 configmap储存程序的配置信息，比如说环境变量等，secret储存敏感信息比如数据库的密码
 ```
 
+# k8s-Service(node port)暴露nginx端口
+
+![image-20230525144724271](assets/Kubernets/image-20230525144724271.png)
