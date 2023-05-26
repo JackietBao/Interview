@@ -91,7 +91,7 @@ configmap储存程序的配置信息，比如说环境变量等，secret储存�
 
 
 
-# Service说一下有什么作用？
+# Service说一下有什么作用？有几种类型？
 
 ```
 service是k8s一个资源对象，作用是用来暴露pod的
@@ -101,6 +101,10 @@ service是k8s一个资源对象，作用是用来暴露pod的
 默认以轮询的方式访问endpoints中的pod，service会将node节点上的端口暴露出来，端口的范围是30000-32767
 
 通过访问node节点的ip以及暴露出来的端口将请求转发到clusterip，之后再访问到endpoints中的某个pod
+```
+
+```
+clusterip、nodeport、loadblance、externalName
 ```
 
 
@@ -131,4 +135,6 @@ resources：资源管理，在这个模块下进行限制
 requests：最低保障，无法去满足，则pod是无法去调度的
 limits：最高的限制，任何情况下limits都应该设置为大于或者等与requests
 ```
+
+
 
