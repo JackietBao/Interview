@@ -7,8 +7,6 @@
 vim prometheus.yml，slave端的ip和端口
 ```
 
-
-
 # Prometheus邮箱报警怎么做？
 
 ```

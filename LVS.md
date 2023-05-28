@@ -20,8 +20,6 @@
 | 额外功能  | 无                       | 会话保持，图片压缩，防盗链、地址重写、流量限制等
 ```
 
-
-
 # Nginx+Keepalived负载均衡原理是什么？
 
 ![image-20230506102908878](assets/LVS/image-20230506102908878.png)
@@ -37,8 +35,6 @@
 # LVS-Nat模式+Keepalived
 
 ![image-20230507125405343](assets/LVS/image-20230507125405343.png)
-
-
 
 # nginx和lvs有什么区别？
 
@@ -61,8 +57,6 @@ lvs通过ip负载均衡实现
 nginx支持http和https协议
 lvs支持TCP、UDP、FTP协议
 ```
-
-
 
 # DR模式和NAT模式的区别？
 

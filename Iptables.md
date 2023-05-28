@@ -9,8 +9,6 @@ iptables和firewalld都是linux防火墙的工具，是为了管理和过滤网�
 4、iptables是传统的linux防火墙工具，firewalld是新的防火墙工具
 ```
 
-
-
 # 你说一下，如何用防火墙设置允许某个ip来访问本机22号端口
 
 ```shell

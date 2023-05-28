@@ -55,8 +55,6 @@ delete：删除
 nginx的access.log和error.log会记录报错信息，根据信息可进行排查。
 ```
 
-
-
 # Nginx介绍
 
 ## 是什么？
@@ -298,8 +296,6 @@ server_names： 只允许指定ip/域名来的请求访问资源（白名单）
 保护公司网络资源不会被恶意盗链和滥用。比如网站上使用的一些图片和资源，如果不保护，被其他网站盗用，会导致流量的损失、增加服务器压力。
 ```
 
-
-
 # 什么是Rewrite
 
 ```shell
@@ -352,8 +348,6 @@ http { 						# 这个是协议级别
 　　　   }
 }
 ```
-
-
 
 # location前缀含义
 
@@ -413,8 +407,6 @@ location ~* \.(gif|jpg|jpeg)$ {
 	/documents/1.jpg → configuration D
 ```
 
-
-
 # root、alias指令区别
 
 ```shell
@@ -433,8 +425,6 @@ location /img {
 #若按照这种配置的话，则访问/img/目录下的文件时，nginx会去/var/www/image/img/目录下找文件。
 http://192.168.153.231/img  ---> /var/www/image/img/index.html
 ```
-
-
 
 # 为什么要对Nginx进行平滑升级
 
@@ -467,8 +457,6 @@ location标签中声明的变量中对这个location块可用
 server标签中声明的变量对server块以及server块中的所有子块可用
 http标签中声明的变量对http块以及http块中的所有子块可用
 ```
-
-
 
 # http和https区别
 
@@ -516,8 +504,6 @@ nginx作为服务端代理的请求，客户端并不知道真实的服务器，
 正向代理用于保护客户端隐私和访问权限，反向代理用于保护服务器隐私和减轻服务器压力。
 ```
 
-
-
 # nginx的gzip压缩有什么作用？怎么做？什么情况下需要压缩？
 
 ```
@@ -535,8 +521,6 @@ gzip压缩的作用：
 gzip on;
 gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
 ```
-
-
 
 # nginx怎么优化？
 
@@ -556,8 +540,6 @@ work process决定了nginx能同时处理的连接数。
 4、使用https加密协议：
 有利于保护数据安全，可能会增加服务器的负担，根据实际情况添加。
 ```
-
-
 
 # 7层负载均衡怎么做？
 
@@ -626,8 +608,6 @@ upstream backend {
 ```
 ~~~
 
-
-
 # nginx的隐藏版本号是什么？
 
 ```
@@ -635,8 +615,6 @@ upstream backend {
 作用：
 增加服务器安全性，减少被攻击的风险。
 ```
-
-
 
 # 动态请求和静态请求有什么区别？
 

@@ -20,8 +20,6 @@ kubernetes控制器，根据控制器配置pod副本数和当前运行的pod实�
 为service提高网络代理和负载均衡
 ```
 
-
-
 # k8s和docker-compose的区别是什么？
 
 ```
@@ -53,8 +51,6 @@ pod有两种方式去使用secret：
 比如在创建mysql的pod，使用mysql预定义变量，通过引用环境变量将secret数据定义为mysql的密码
 但是，更新secret值，容器里面的值不会更新
 ```
-
-
 
 # k8s的secret和configmap有什么区别？详细的说一下？
 
@@ -89,8 +85,6 @@ configmap储存程序的配置信息，比如说环境变量等，secret储存�
 3、replication controller=CR与Deployment一样功能，但是不能回滚升级
 ```
 
-
-
 # Service说一下有什么作用？有几种类型？
 
 ```
@@ -107,8 +101,6 @@ service是k8s一个资源对象，作用是用来暴露pod的
 clusterip、nodeport、loadblance、externalName
 ```
 
-
-
 # k8s的镜像拉取策略说一下？
 
 ```
@@ -124,8 +116,6 @@ NerverPod：
 对于标签为latest的镜像文件，默认镜像获取策略是always
 对于其他标签的镜像，默认策略是Ifnotpresent
 ```
-
-
 
 # k8s如何做pod资源限制？
 
