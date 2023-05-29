@@ -125,5 +125,42 @@ requests：最低保障，无法去满足，则pod是无法去调度的
 limits：最高的限制，任何情况下limits都应该设置为大于或者等与requests
 ```
 
+# 你了解的k8s资源对象有哪些？说一下？
 
+```
+Event：记录事件，用于排错
+Namespace：命名空间
+Deployment：副本管理器
+Rc：副本管理器，不能进行回滚与热更新
+Service：四层负载，为pod提供网络代理和负载均衡，提供统一访问入口
+Endpoints：pod的网络代理，存储的是service所有访问的后端pod ip和端口
+Label：标签
+Configmap：存储配置文件
+Secret：用于存储敏感数据
+Role：权限集合
+Clusterrole：集群权限集合
+Daemonset：每个节点都会部署pod
+Statefulset：有序创建，有序删除
+Storageclass：声明存储插件，用于自动创建pv
+ingress：定义如何转发到service的规则，实现反向代理和负载均衡，七层对外暴露入口
+```
+
+# k8s的存储都有哪些？什么区别？
+
+```
+1. EmptyDir：在Pod本地创建一个空目录来存储数据，由于该目录只在该Pod的生命周期内存在，因此适合于一些短暂的数据存储需求。
+2. HostPath：挂载宿主机的路径到Pod中，可以用于访问宿主机上的文件或目录，但是不适合跨节点访问。
+3. PV/PVC：PersistentVolumes（PV）和PersistentVolumeClaims（PVC）在Kubernetes中提供了一个抽象层，使得Pod可以使用不同的存储设备而无需关心存储细节。
+4. NFS：Network File System（NFS）是一种基于网络的文件系统协议，可以在不同的系统之间共享文件。Kubernetes中可以将NFS挂载到Pod中以共享存储。
+5. ConfigMap/Secret：可以将配置文件或敏感信息存储到Kubernetes中的ConfigMap或Secret中，以供Pod访问。
+6. CSI：Container Storage Interface（CSI）是一种标准接口，允许存储提供商以插件的形式创建自己的存储驱动。
+7. StatefulSet：StatefulSet是Kubernetes中的一个控制器，可以保证Pod按照顺序启动和停止，适合有状态的应用程序的存储需求。它配合PV/PVC使用可以保证Pod的数据持久化。
+```
+
+# pod的亲和性和反亲和性有什么作用？
+
+```
+是k8s的调度机制 控制pod在节点上的调度位置
+确保应用程序的可用性 提高应用程序性能 降低应用程序故障率
+```
 
