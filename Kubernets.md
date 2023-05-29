@@ -37,7 +37,7 @@ secret是k8s其中的资源对象，用来存储密码，secret会将密码进�
 原理：把pod想访问的加密数据放到etcd中，用户可以通过pod容器挂载volume的方式或者环境变量的方式访问secret信息
 
 pod有两种方式去使用secret：
-命令行、yml行
+命令行、yaml行
 
 引用方式：
 1、卷挂载：
@@ -47,7 +47,6 @@ pod有两种方式去使用secret：
 卷挂载前提下，volumes下方定义items，在items下方再定义key以及相对路径，将我们的数据存储指定目录
 
 3、环境变量
-环境变量的方式引入secret数据
 比如在创建mysql的pod，使用mysql预定义变量，通过引用环境变量将secret数据定义为mysql的密码
 但是，更新secret值，容器里面的值不会更新
 ```
