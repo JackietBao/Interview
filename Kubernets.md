@@ -130,15 +130,21 @@ limits：最高的限制，任何情况下limits都应该设置为大于或者�
 ```
 Event：记录事件，用于排错
 Namespace：命名空间
+
 Deployment：副本管理器
-Rc：副本管理器，不能进行回滚与热更新
+replication controller=RC：副本管理器，不能进行回滚与热更新
+
 Service：四层负载，为pod提供网络代理和负载均衡，提供统一访问入口
 Endpoints：pod的网络代理，存储的是service所有访问的后端pod ip和端口
+
 Label：标签
+
 Configmap：存储配置文件
 Secret：用于存储敏感数据
+
 Role：权限集合
 Clusterrole：集群权限集合
+
 Daemonset：每个节点都会部署pod
 Statefulset：有序创建，有序删除
 Storageclass：声明存储插件，用于自动创建pv
