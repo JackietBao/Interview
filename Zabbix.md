@@ -509,3 +509,18 @@ zabbix报警设置中，创建自定义key文件在zabbix路径中，获取主�
 我们还没有把8.0改为5.7，因为该的比较麻烦，所以暂时就这样设置，但是我们后期创建用户会先create user进行创建，就不用grant。
 ```
 
+# zabbix监控mysql端口两种方法
+
+```
+1、表象版
+zabbix-server端自带模板net.tcp.listen[port]
+
+2、本质版
+net.tcp.port[port]
+```
+
+# net.tcp.port从哪一块发的链接？
+
+```
+使用net.tcp.port监控端口时，zabbix服务器或代理会发起一个连接到这个指定的端口，如果连接成功，表示这个端口处于开启状态，如果连接失败，表示端口处于关闭状态
+```

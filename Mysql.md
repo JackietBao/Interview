@@ -626,3 +626,27 @@ http://dbahacker.com/mysql/innodb-myisam-compare(InnoDB与MyISAM的六大区别)
 MyISAM、InnoDB、MyISAM Merge引擎、InnoDB、memory(heap)、archive
 ```
 
+# Mysql主从复制步骤？
+
+```shell
+master操作
+1、vim /etc/my.cnf
+定义server  id
+开启binlog日志
+开启gtid
+2、创建账号
+```
+
+```shell
+slave操作
+1、vim /etc/my.cnf
+定义id
+开启gtid
+...
+2、登陆mysql
+\e
+主ip 地址 
+授权用户
+授权密码
+```
+

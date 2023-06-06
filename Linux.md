@@ -188,3 +188,211 @@ fdisk：划分磁盘MBR格式。硬盘容量<2T
 5.抓包，tcpdump命令抓包，tcpdump -nn -i eth0抓包eth0网卡的包
 ```
 
+# 文件查找
+
+```shell
+按文件名
+从根开始找文件
+[root@qfedu.com ~]# find / -name “file2” #从根开始找文件
+/root/file2
+/var/tmp/file2
+[root@qfedu.com ~]# find /etc -name "ifcfg-ens33" #以名字的方式查找 
+[root@qfedu.com ~]# find /etc -iname "Ifcfg-ens33" #-i忽略大小写
+```
+
+```shell
+按文件的大小
+[root@qfedu.com ~]# find /etc -size +5M		#大于5M
+[root@qfedu.com ~]# find /etc -size 5M		#等于5M
+[root@qfedu.com ~]# find /etc -size -5M      #小于5M
+[root@qfedu.com ~]# find / -size +3M -a -size -5M  #查找/下面大于3M而且小于5M的文件
+-a：add
+[root@qfedu.com ~]# find / -size -1M -o -size +80M #查找/下面小于1M或者大于80M的文件
+-o：or
+[root@qfedu.com ~]# find / -size -3M -a -name "*.txt" #查找/ 下面小于3M而且名字是.txt的文件
+```
+
+```shell
+按时间查找
+[root@qfedu.com ~]# find /opt -mtime +5		#修改时间5天之前
+[root@qfedu.com ~]# find /opt -atime +1     #访问时间1天之前
+[root@qfedu.com ~]# find . -mtime -2		#修改时间2天之内
+
+[root@qfedu.com ~]# find . -amin +1         #访问时间在1分钟之前
+[root@qfedu.com ~]# find /opt -amin -4      #访问时间在4分钟之内
+[root@qfedu.com ~]# find /opt -mmin -2      #修改时间在2分钟之内
+```
+
+```shell
+按文件类型
+[root@qfedu.com ~]# find /dev -type f	#f普通文件
+[root@qfedu.com ~]# find / -type f -size -1M -o -name "*.txt"
+
+[root@qfedu.com ~]# find /dev -type d	#d目录
+[root@qfedu.com ~]# find /etc/ -type d -name "*.conf.d"
+
+[root@qfedu.com ~]# find /etc -type l	#l链接
+
+[root@qfedu.com ~]# find /dev -type b	#b块设备
+[root@qfedu.com ~]# find /dev/ -type b -name "sd*"
+```
+
+```shell
+按文件权限
+[root@qfedu.com ~]# find . -perm 644            #.是当前目录    精确查找644  
+[root@qfedu.com ~]# find /usr/bin  -perm -4000  #包含set uid
+[root@qfedu.com ~]# find /usr/bin  -perm -2000  #包含set gid
+[root@qfedu.com ~]# find /usr/bin  -perm -1000  #包含sticky
+```
+
+# awk用法
+
+```shell
+FS(输入字段分隔符)---一般简写为-F(属于行处理前)
+[root@awk ~]# cat /etc/passwd | awk 'BEGIN{FS=":"} {print $1,$2}'
+root x
+bin x
+daemon x
+adm x
+lp x
+sync x
+shutdown x
+halt x
+mail x
+[root@awk ~]# cat /etc/passwd | awk -F":" '{print $1,$2}'
+root x
+bin x
+daemon x
+adm x
+lp x
+sync x
+shutdown x
+halt x
+mail x
+
+#注：如果-F不加默认为空格区分！
+===============================================================
+OFS（输出字段分隔符）
+[root@awk ~]# cat /etc/passwd | awk 'BEGIN{FS=":";OFS=".."} {print $1,$2}'
+root..x
+bin..x
+daemon..x
+adm..x
+lp..x
+sync..x
+shutdown..x
+halt..x
+mail..x
+======================================================================
+1.创建两个文件
+[root@awk ~]# vim a.txt
+love
+love.
+loove
+looooove
+
+
+[root@awk ~]# vim file1.txt
+isuo
+IPADDR=192.168.246.211
+hjahj123
+GATEWAY=192.168.246.1
+NETMASK=255.255.255.0
+DNS=114.114.114.114
+
+NR   表示记录编号, 在awk将行做为记录, 该变量相当于当前行号，也就是记录号
+[root@awk ~]# awk '{print NR,$0}' a.txt file1.txt
+1 love
+2 love.
+3 loove
+4 looooove
+5  
+6 isuo
+7 IPADDR=192.168.246.211
+8 hjahj123
+9 GATEWAY=192.168.246.1
+10 NETMASK=255.255.255.0
+11 DNS=114.114.114.114
+
+FNR：表示记录编号, 在awk将行做为记录, 该变量相当于当前行号，也就是记录号(#会将不同文件分开)
+[root@awk ~]# awk '{print FNR,$0}' a.txt file1.txt
+1 love
+2 love.
+3 loove
+4 looooove
+5  
+1 isuo
+2 IPADDR=192.168.246.211
+3 hjahj123
+4 GATEWAY=192.168.246.1
+5 NETMASK=255.255.255.0
+6 DNS=114.114.114.114
+===========================================================
+RS(输入记录分隔符)
+1.创建一个文件
+[root@awk ~]# vim passwd
+root:x:0:0:root:/root:/bin/bashbin:x:1:1:bin:/bin:/sbin/nologin
+[root@awk ~]# cat passwd | awk 'BEGIN{RS="bash"} {print $0}' 
+root:x:0:0:root:/root:/bin/
+bin:x:1:1:bin:/bin:/sbin/nologin
+
+ORS(输出记录分隔符)
+2.对刚才的文件进行修改
+[root@awk ~]# vim passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+[root@awk ~]# cat passwd | awk 'BEGIN{ORS=" "} {print $0}'
+root:x:0:0:root:/root:/bin/bash bin:x:1:1:bin:/bin:/sbin/nologin
+===========================================================
+NF：统计字段的个数
+[root@awk ~]# cat /etc/passwd | awk -F":" '{print NF}'
+7
+7
+7
+7
+$NF:打印最后一列
+[root@awk ~]# cat /etc/passwd | awk -F":" '{print $NF}'
+/bin/bash
+/sbin/nologin
+/sbin/nologin
+/sbin/nologin
+/sbin/nologin
+
+将文件合并为一行
+[root@awk ~]# cat /etc/passwd | awk 'BEGIN{ORS="" } {print $0}'
+
+
+把一行内容分成多行
+1.首先创建一个文件
+[root@awk ~]# vim d.txt
+root:x:0:0:root:/root:/bin/bash
+[root@awk ~]# cat d.txt | awk 'BEGIN{RS=":"} {print $0}'
+root
+x
+0
+0
+root
+/root
+```
+
+# netstat -tcip参数什么意思？
+
+```shell
+-t 选项表示只显示 TCP 连接的信息；
+-c 选项表示每隔一段时间重新显示一次当前所有连接的状态；
+-l 选项表示只显示监听状态的连接；
+-p 选项表示显示每个连接对应的进程 ID 和进程名。
+```
+
+# 看磁盘的IO用什么命令？
+
+```shell
+使用 iostat 命令来查看磁盘的 I/O 状况，包括磁盘读写的速度、I/O 的等待时间、I/O 请求队列的长度
+```
+
+# crontab日志路径在哪儿？
+
+```shell
+/var/spool/cron/
+```
+
