@@ -395,4 +395,3 @@ root
 ```shell
 /var/spool/cron/
 ```
-
