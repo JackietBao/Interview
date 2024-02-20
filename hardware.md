@@ -82,7 +82,7 @@ I/O即input/output输入/输出，一般翻译为读写。
 2.高并发访问环境
 ```
 
-![img](assets/Hardware/v2-f19764545b5aef702dcf415aeaf4f53e_1440w.webp)
+![v2-f19764545b5aef702dcf415aeaf4f53e_1440w](assets/Hardware/v2-f19764545b5aef702dcf415aeaf4f53e_1440w.webp)
 
 ### raid1：镜像盘
 
@@ -101,7 +101,7 @@ I/O即input/output输入/输出，一般翻译为读写。
 2.灾备
 ```
 
-![img](assets/Hardware/v2-d96a366ea45552d769d9fd653e8122eb_1440w.webp)
+![v2-d96a366ea45552d769d9fd653e8122eb_1440w](assets/Hardware/v2-d96a366ea45552d769d9fd653e8122eb_1440w.webp)
 
 ### raid5：将性能、安全、成本都兼顾
 
@@ -110,7 +110,7 @@ RAID5把校验码信息分布到各个磁盘上。
 RAID5最少需要三块磁盘来组建磁盘阵列，允许最多同时坏一块磁盘。要是两块磁盘坏了，数据无法恢复。
 ```
 
-![img](assets/Hardware/v2-b2b9390180a9e5bf186cab19c31192d9_1440w.webp)
+![v2-b2b9390180a9e5bf186cab19c31192d9_1440w](assets/Hardware/v2-b2b9390180a9e5bf186cab19c31192d9_1440w.webp)
 
 ### raid10：兼顾raid1和raid0优点
 
@@ -121,7 +121,7 @@ RAID1同时写双份无差别数据到工作盘和镜像盘起到了数据保障
 RAID10有一半的磁盘空间用于存储冗余数据的，浪费的很严重。
 ```
 
-![img](assets/Hardware/v2-aeb458ddba57d0e3742f6dc6a15b7756_1440w.webp)
+![v2-aeb458ddba57d0e3742f6dc6a15b7756_1440w](assets/Hardware/v2-aeb458ddba57d0e3742f6dc6a15b7756_1440w.webp)
 
 # 远程管理卡
 
