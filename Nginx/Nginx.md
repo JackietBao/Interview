@@ -20,6 +20,22 @@
 含义：协议对于事务处理没有记忆能力
 ```
 
+# 什么是http
+
+> HTTP(Hyper Text Transfer Protocol)中文名为超文本传输协议
+>
+> HTTP 协议就是将用户请求的 HTML 页面从一台 web 服务器传输到客户端浏览器的一种协议。
+
+![image-20240314212817930](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240314212817930.png)
+
+# URL、Html、Http之间的关系
+
+> 个完整的 HTML 页面是由多个不同的 ur1 资源组成的;而 HTTP 协议主要是用来传输这种 HTML 页面的;
+
+# Http工作原理
+
+![image-20240314213140707](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240314213140707.png)
+
 # http请求方法
 
 ```shell
