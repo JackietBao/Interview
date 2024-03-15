@@ -792,3 +792,357 @@ nginx具有反向代理功能，这样可以将动态请求传倒给集群服务
 | ~      | 区分大小写的正则匹配         | 3      |
 | ~*     | 不区分大小写的正则匹配       | 4      |
 | /      | 通用匹配，任何请求都会匹配到 | 5      |
+
+# LNMP实现过程
+
+用户请求 http://example.com/index.php ，对于Nginx服务而言，是无法处理 index.php 这样的动态脚本的，那么 Nginx 该如何配置，才能支持这样的动态请求呢?
+
+> 第一步:当用户发起 HTTP 请求，请求首先被 Nginx 接收;
+>
+> 第二步: Nginx 通过预先定义好的 location 规则进行匹配;
+>
+> 第三步:Nginx将匹配到的动态内容，通过 fastcgi 协议传到给后端的 php 应用服务处理
+
+![image-20240315192823904](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315192823904.png)
+
+# LNMP实现的细节
+
+Nginx、PHP、MySQL 之间是如何工作的
+
+> 1.用户首先通过 http 协议发起请求，请求会先抵达 Nginx;
+>
+> 2.Nginx 根据用户的请求进行 Location 规则匹配;
+>
+> 3.Location 如果匹配到请求是静态，则由 Nginx 读取本地直接返回;
+>
+> 4.Location 如果匹配到请求是动态，则由 Nginx 将请求转发给 fastcgi 协议;
+>
+> 5.fastgi 收到后会将请求交给 php-fpm 管理进程;
+>
+> 6.php-fpm 管理进程接收到后会调用具体的工作进程 warrap
+>
+> 7.warrap 进程会调用 php 解析器解析代码， php 解析后直接返回
+>
+> 8.如果有查询数据库操作，则由 php 连接数据库(用户 密码 IP)发起查询的操作
+>
+> 9.最终数据由 mysql->php->php-fpm->fastcgi->nginx->http->user
+
+![image-20240315193034466](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315193034466.png)
+
+# 为何要拆分数据库？
+
+由于单台服务器运行 LNMP 架构会导致网站访问缓慢，:当系统内存被吃满时，很容易导致系统出现 oom ，从而 ki11 掉 MySQL 数据库，所以需要将 web 和数据库进行独立部署。
+
+拆分数据库能解决什么问题？
+
+> 1.缓解 web 网站的压力;
+> 2.增强数据库读写性能;
+> 3.提高用户访问的速度;
+
+数据库拆分架构演变
+
+![image-20240315231710159](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315231710159.png)
+
+# 为何要扩展多 台web节点？
+
+单台 web 服务器能抗住的访问量是有限的，配置多台 web 服务器能提升更高的访问速度。
+
+扩展多台节点解决什么问题？
+
+> 1.单台 web 节点如果故障，会导致业务 down 机;
+>
+> 2.多台 web 节点能保证业务的持续稳定，扩展性高!
+>
+> 3.多台 web 节点能有效的提升用户访问网站的速度
+
+扩展多web节点架构演变
+
+![image-20240315231729804](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315231729804.png)
+
+# 分为要拆分静态资源？
+
+当后端的 web节点出现多台时，会导致用户上传的图片、视频附件等内容仅上传至一台web 服务器，那么其他的 web 服务器则无法访问到该图片
+
+如果增加一台共享存储能解决什么问题
+
+> 1.保证了多台 web 节点静态资源一致。
+>
+> 2.有效节省多台 web 节点的存储空间。
+>
+> 3.统一管理静态资源，便于后期推送至 CDN 进行静态资源加速
+
+拆分静态资源架构演变
+
+![image-20240315232411991](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315232411991.png)
+
+# 现在有多个WEB服务器，该如何进行访问?
+
+1.DNS轮询
+
+> 1、需要所有的web节点具备公网IP地址
+>
+> 2、公网独立IP需要费用，而且不便宜
+>
+> 3、所有的web节点有公网IP，不安全
+>
+> 4、DNS只有轮询机制，没有健康检查功能
+
+2、负载均衡
+
+> 1、所有的web节点不需要有公网IP，能节省成本、并保证安全
+>
+> 2、能够对后端的web节点进行健康检查机制;
+>
+> 3、负载均衡有多种调度算法来满足企业不同需求:
+
+![image-20240315233605490](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315233605490.png)
+
+# Nginx代理服务常见的模式有哪些？
+
+那Nginx作为代理服务,按照应用场景模式进行总结，代理分为正向代理、反向代理
+
+### 正向代理
+
+> 正向代理，(内部上网) 客户端<-->代理->服务端
+
+![image-20240315233756519](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315233756519.png)
+
+1、客户端翻墙
+
+![image-20240315234010230](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234010230.png)
+
+2、客户端提速
+
+![image-20240315234028488](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234028488.png)
+
+3、客户端缓存
+
+比如:下载资源，可以先查看代理服务是否有，如果有直接通过代理获取
+
+![image-20240315234112170](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234112170.png)
+
+4、客户端授权
+
+很多公司为了安全，连接外网需要通过防火墙，防火墙可以配置规则，允许谁可以上外网，谁不可以上外网。
+
+![image-20240315234147745](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234147745.png)
+
+### 反向代理
+
+反向代理，用于公司集群架构中，客户端->代理<-->服务端
+
+![image-20240315234240097](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234240097.png)
+
+1、路由功能
+
+根据用户请求的URI调度到不同的功能的服务器进行处理
+
+![image-20240315234339794](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234339794.png)
+
+2、负载均衡
+
+将用户发送的请求，通过负载均衡调度算法挑选一台合适的节点进行请求处理。
+
+![image-20240315234406402](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234406402.png)
+
+3、动静分离
+
+根据用户请求的URI进行区分，将动态资源调度至应用服务器处理，将静态资源调度至静态资源服务器处理。
+
+![image-20240315234445611](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234445611.png)
+
+4、数据缓存
+
+将后端查询的数据存储至反向代理上缓存，可以加速用户获取资源。
+
+![image-20240315234522805](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234522805.png)
+
+# 正向代理与反向代理的区别？
+
+> 区别在于形式上服务的"对象"不一样、其次架设的位置点不一样
+>
+> 正向代理代理的对象是客户端，为客户端服务
+>
+> 反向代理代理的对象是服务端、，为服务端服务
+
+# Nginx代理服务支持协议有哪些？
+
+Nginx作为代理服务，支持的代理协议非常的多，具体如下图
+
+![image-20240315234808010](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234808010.png)
+
+通常情况下，我们将Nginx作为反向代理，常常会用到如下几种代理协议
+
+![image-20240315234926837](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240315234926837.png)
+
+# 什么是负载均衡？
+
+负载均衡 Load Balance指的是将用户访问请求所产生的流量，进行平衡，分摊到多个应用节点处理。
+
+负载均衡扩展了应用的服务能力，增强了应用的可用性。
+
+# 为什么需要负载均衡？
+
+当我们的 web 服务器直接面向用户，往往要承载大量并发请求，单台服务器难以负荷，我使用多台 WEB 服务器组成集群，前端使用 Nginx 负载均衡，将请求分散的打到我们的后端服务器集群中，实现负载的流量分发。从而提升整体性能、以及系统的容灾能力。
+
+![image-20240316001716970](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240316001716970.png)
+
+# 负载均衡与代理的区别是什么？
+
+Nginx 负载均衡与 Nginx 反向代理不同地方在于：
+
+> Nginx 代理仅代理一台服务器。
+>
+> Nginx 负载均衡则是将客户端请求通过 proxy_pass 代理至一组 upstream
+> 资源池。
+
+# Nginx负载均衡应用场景有哪些？
+
+1、四层负载均衡
+
+四层负载均衡指的是 0SI 七层模型中的传输层，四层仅需要对客户端的请求进行 TCP/IP 协议的包转发就可以实现负载均衡。
+
+四层负载均衡的性能极好、因为只需要底层进行转发处理，而不需要进行一些复杂的逻辑
+
+![image-20240316001946792](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240316001946792.png)
+
+2、七层负载均衡
+
+七层负载均衡工作在应用层，它可以完成很多应用方面的协议请求，比如我们说的 http 应用负载均衡，它可以实现 http 头信息的改写、安全应用规则控制、 URI 匹配规则控制、及rewrite 等功能，所以在应用层里面可以做的内容就更多了
+
+![image-20240316002051367](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240316002051367.png)
+
+# 四层负载均衡与七层负载均衡的区别？
+
+> 四层负载均衡:传输层
+
+优点:性能高，数据包在底层就进行了转发
+
+缺点:仅支持 ip:prot 转发，无法完成复杂的业务逻辑应用
+
+> 七层负载均衡:应用层
+
+优点:贴近业务，支持 URI路径匹配、Header 改写、 Rewrite 等
+
+缺点:性能低，数据包需要拆解到顶层才进行转发
+
+# Nginx负载均衡配置的场景有哪些？
+
+Nginx实现负载均衡需要两个模块：
+
+> proxy_pass代理模块
+>
+> upstream虚拟资源池模块
+
+负载均衡场景架构图
+
+![image-20240316002511207](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240316002511207.png)
+
+# Nginx负载均衡调度算法有哪些？
+
+> 轮询：按时间顺序逐一分配到不同的后端服务器(默认)
+>
+> weight：加权轮询,weight值越大,分配到的访问几率越高
+>
+> ip_hash：每个请求按访问IP的hash结果分配,这样来自同一IP的固定访问一个后端服务
+> 器
+>
+> least_conn：将请求传递到活动连接数最少的服务器。
+
+1、轮询调度算法
+
+将每一次用户的请求，轮流分配给内部中的服务器。
+
+轮询算法的优点是其简洁性，它无需记录当前所有连接的状态，所以它是一种无状态调度。
+
+2、weight
+
+根据服务器的不同处理能力，给每个服务器分配不同的权值，使其能够接受相应权值数的服务请求。
+
+3、ip_hash调度算法
+
+ip_hash 是基于用户请求的 IP ，对该 IP 进行 hash 运算，根据 hash 运算的值，将请求分配到后端特定的一台节点进行处理。ip_hash 算法实现公式:hash(ip)%node_ counts = index
+
+![image-20240316003123665](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240316003123665.png)
+
+ip_hash 调度算法会带来两个问题
+
+1.如果有大量来自于同一IP的请求会造成某个后端节点流量过大，而其他节点无流量
+
+2.如果临时下线一台节点，会出现重新计算 hash 值，官方建议将下线节点标记为down 状态，以保留客户端 IP 地址的当前哈希值。
+
+![image-20240316003244391](C:\Users\JackietBao\AppData\Roaming\Typora\typora-user-images\image-20240316003244391.png)
+
+如果有大量的用户调度到某一节点，而该节点刚好故障，则该算法会重新计算结果，从而造成大量的用户被转移其他节点处理，而需要重新建立会话。
+
+4、一致性哈希算法
+
+为了规避上述 hash 情况，一致性 hash 算法就诞生，一致性 Hash 算法也是使用取模的方法,但不是对服务器节点数量进行取模，而是对 2的32方 取模。即，一致性 Hash 算法将整个 Hash 空间组织成一个虚拟的圆环， Hash 函数值的空间为0~2^32-1
+
+5、url_hash调度算法
+
+根据用户请求的 URL 进行 hash 取模，根据 hash 运算的值，将请求分配到后端特定的一台节点进行处理。 URL算法使用场景如下:client-->nginx-->url_hash-->cache1-->app
+
+> 1.用户请求 nginx 负载均衡器，通过 ur1 调度算法，将请求调度至 cache1
+>
+> 2.由于 cache1 节点没有对应的缓存数据，则会请求后端获取，然后返回数据，并将数据缓起来；
+>
+> 3.当其他用户再次请求此前相同的 URL 时，此时调度器依然会调度至 cache1 节点处理;
+>
+> 4.由于 cache1 节点已存在该 URL 资源缓存，所以直接将缓存数据进行返回;能大幅提升网站的响应;
+
+6、least_conn
+
+least conn调度算法实现原理，哪台节点连接数少，则将请求调度至哪台节点。
+
+# Nginx负载均衡后端状态有哪些？
+
+后端 web 节点在前端 Nginx 负载均衡调度中的状态
+
+| 状态         | 概述                             |
+| ------------ | -------------------------------- |
+| down         | 当前的server暂时不参与负载均衡   |
+| backup       | 预留的备份服务器                 |
+| max_fails    | 允许请求失败的次数               |
+| fail_timeout | 经过max fails失败后,服务暂停时间 |
+| max_conns    | 限制最大的接收连接数             |
+
+> max_conns限制连接数
+
+max_conns 用来限制每个后端节点能够接收的最大TCP连接数，如果超过此连接则会抛出错误。
+
+> down标识关闭状态
+
+down 将服务器标记为不可用状态
+
+> backup标识备份状态
+
+backup 将服务器标记为备份服务器。当主服务器不可用时，将请求传递至备份服务器处理。
+
+> max fails与fail timeout
+
+max fails=2 服务器通信失败尝试2次，任然失败，认为服务器不可用;
+
+fail_timeout=5s 服务器通信失败后，每5s探测一次节点是否恢复可用；
+
+在 fail timeout 设定的时间内，与服务器连接失败达到 max fails 则认为服务器不可用;
+
+# 什么是会话保持？
+
+当用户登陆一个网站服务器，网站服务器会将用户的登陆信息存储下来(存储下来的内容叫Session )，以保证我们能够一直处于“登陆在线“状态。
+
+# 为什么需要会话保持？
+
+由于我们使用的是负载均衡轮询机制，会导致用户请求分散在不同的节点，从而造成会话无法保持。
+
+假设用户A，通过负载均衡登陆了网站，此时会话信息存储在A节点，那么当它一刷新，负载均衡会将请求分发给B节点，那么B节点没有用户A的登陆信息，就会提示用户A登陆，当A用户点击登陆时又会将请求分发给C节点，从而造成用户A无法实现会话保持。
+
+# 如何实现会话保持？
+
+1.粘性session:指Ngnix每次都将同一用户的所有请求转发至同一台服务器上，及Nginx的IP hash.
+
+2.session复制:每次session发生变化，就广播给集群中的服务器，使所有的服务器上的session相同。
+
+3.session共享:缓存session至内存数据库中，使用redis，memcached实现。
+
+4.session持久化:将session存储至数据库中，像操作数据一样操作session。
